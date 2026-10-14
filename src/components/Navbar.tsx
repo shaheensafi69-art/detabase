@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
 import {
   PlusCircle,
   Receipt,
@@ -316,8 +317,8 @@ export default function Navbar({
         </button>
 
         {/* Settings Shortcut Button */}
-        <button
-          onClick={onOpenSettings}
+        <Link
+          href="/settings"
           style={{
             display: 'inline-flex',
             alignItems: 'center',
@@ -330,15 +331,16 @@ export default function Navbar({
             color: '#94a3b8',
             cursor: 'pointer',
             transition: 'all 0.15s ease',
+            textDecoration: 'none',
           }}
           title="System Settings & Office Parameters"
         >
           <Settings size={16} />
-        </button>
+        </Link>
 
         {/* User Profile Card */}
-        <div
-          onClick={onOpenSettings}
+        <Link
+          href="/settings"
           style={{
             display: 'flex',
             alignItems: 'center',
@@ -348,6 +350,7 @@ export default function Navbar({
             padding: '5px 10px',
             borderRadius: '10px',
             cursor: 'pointer',
+            textDecoration: 'none',
           }}
           title="User profile • Click to open settings"
         >
@@ -383,7 +386,7 @@ export default function Navbar({
               {currentUser.role?.split('&')[0] || 'Staff'}
             </div>
           </div>
-        </div>
+        </Link>
 
         {/* Logout Button (English) */}
         {onLogout && (

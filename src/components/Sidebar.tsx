@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
 import {
   LayoutDashboard,
   Wallet,
@@ -144,50 +145,32 @@ export default function Sidebar({
 
         {navItems.map((item) => {
           const isActive = currentTab === item.id;
-          return (
-            <button
-              key={item.id}
-              onClick={() => {
-                if (item.id === 'services' && onOpenServiceManager) {
-                  onOpenServiceManager();
-                } else {
-                  onSelectTab(item.id);
-                }
-              }}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                padding: '11px 12px',
-                borderRadius: '12px',
-                border: isActive
-                  ? '1px solid rgba(2, 132, 199, 0.5)'
-                  : '1px solid transparent',
-                background: isActive
-                  ? 'linear-gradient(135deg, rgba(2, 132, 199, 0.22) 0%, rgba(249, 115, 22, 0.1) 100%)'
-                  : 'transparent',
-                color: isActive ? '#ffffff' : '#94a3b8',
-                fontWeight: isActive ? 800 : 500,
-                fontSize: '13.5px',
-                cursor: 'pointer',
-                transition: 'all 0.18s ease',
-                textAlign: 'left',
-                width: '100%',
-                boxShadow: isActive ? '0 2px 12px rgba(2, 132, 199, 0.2)' : 'none',
-              }}
-              onMouseEnter={(e) => {
-                if (!isActive) {
-                  e.currentTarget.style.background = 'rgba(255, 255, 255, 0.04)';
-                  e.currentTarget.style.color = '#f8fafc';
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (!isActive) {
-                  e.currentTarget.style.background = 'transparent';
-                  e.currentTarget.style.color = '#94a3b8';
-                }
-              }}
-            >
+          const commonStyles: React.CSSProperties = {
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            padding: '11px 12px',
+            borderRadius: '12px',
+            border: isActive
+              ? '1px solid rgba(2, 132, 199, 0.5)'
+              : '1px solid transparent',
+            background: isActive
+              ? 'linear-gradient(135deg, rgba(2, 132, 199, 0.22) 0%, rgba(249, 115, 22, 0.1) 100%)'
+              : 'transparent',
+            color: isActive ? '#ffffff' : '#94a3b8',
+            fontWeight: isActive ? 800 : 500,
+            fontSize: '13.5px',
+            cursor: 'pointer',
+            transition: 'all 0.18s ease',
+            textAlign: 'left',
+            width: '100%',
+            boxShadow: isActive ? '0 2px 12px rgba(2, 132, 199, 0.2)' : 'none',
+            textDecoration: 'none',
+            boxSizing: 'border-box',
+          };
+
+          const content = (
+            <>
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                 <span style={{ color: isActive ? '#38bdf8' : '#64748b' }}>
                   {item.icon}
@@ -211,6 +194,58 @@ export default function Sidebar({
                   {item.badge}
                 </span>
               )}
+            </>
+          );
+
+          if (item.id === 'settings') {
+            return (
+              <Link
+                key={item.id}
+                href="/settings"
+                style={commonStyles}
+                onMouseEnter={(e) => {
+                  if (!isActive) {
+                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.04)';
+                    e.currentTarget.style.color = '#f8fafc';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!isActive) {
+                    e.currentTarget.style.background = 'transparent';
+                    e.currentTarget.style.color = '#94a3b8';
+                  }
+                }}
+              >
+                {content}
+              </Link>
+            );
+          }
+
+          return (
+            <button
+              key={item.id}
+              onClick={() => {
+                if (item.id === 'services' && onOpenServiceManager) {
+                  onOpenServiceManager();
+                } else {
+                  onSelectTab(item.id);
+                }
+              }}
+              style={commonStyles}
+              onMouseEnter={(e) => {
+                if (!isActive) {
+                  e.currentTarget.style.background = 'rgba(255, 255, 255, 0.04)';
+                  e.currentTarget.style.color = '#f8fafc';
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (!isActive) {
+                  e.currentTarget.style.background = 'transparent';
+                  e.currentTarget.style.color = '#94a3b8';
+                }
+              }}
+            >
+              {content}
             </button>
           );
         })}

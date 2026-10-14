@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useMemo } from 'react';
+import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { Transaction, DailyExpense, Customer, OfficeSettings, ServiceType, DatePeriod, CustomService } from '@/types';
 import {
@@ -18,10 +19,8 @@ import ExpenseModal from '@/components/ExpenseModal';
 import CustomerModal from '@/components/CustomerModal';
 import CustomerDetailModal from '@/components/CustomerDetailModal';
 import ReceiptModal from '@/components/ReceiptModal';
-import SettingsModal from '@/components/SettingsModal';
 import TelegramSyncModal from '@/components/TelegramSyncModal';
 import ServiceManagerModal from '@/components/ServiceManagerModal';
-import LoginScreen from '@/components/LoginScreen';
 
 import {
   Search,
@@ -45,6 +44,8 @@ import {
 } from 'lucide-react';
 
 export default function Home() {
+  const router = useRouter();
+
   // Authentication State
   const [currentUser, setCurrentUser] = useState<{ name: string; role: string; email?: string } | null>(null);
   const [authInitialized, setAuthInitialized] = useState<boolean>(false);
@@ -52,25 +53,36 @@ export default function Home() {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const stored = typeof window !== 'undefined' ? localStorage.getItem('s4hel_current_user') : null;
+        const stored = typeof window !== 'undefined'
+          ? (localStorage.getItem('s4hel_user_session') || localStorage.getItem('s4hel_current_user'))
+          : null;
         if (stored) {
-          setCurrentUser(JSON.parse(stored));
-        } else {
-          const { data: { session } } = await supabase.auth.getSession();
-          if (session?.user) {
-            const user = {
-              name: session.user.user_metadata?.full_name || session.user.user_metadata?.name || 'Staff User',
-              role: session.user.user_metadata?.role || 'Head of Operations & Lead Accountant',
-              email: session.user.email,
-            };
+          const user = JSON.parse(stored);
+          if (user && user.name) {
             setCurrentUser(user);
-            if (typeof window !== 'undefined') {
-              localStorage.setItem('s4hel_current_user', JSON.stringify(user));
-            }
+            setAuthInitialized(true);
+            return;
           }
+        }
+
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session?.user) {
+          const user = {
+            name: session.user.user_metadata?.full_name || session.user.user_metadata?.name || session.user.email?.split('@')[0] || 'Staff User',
+            role: session.user.user_metadata?.role || 'Head of Operations & Lead Accountant',
+            email: session.user.email,
+          };
+          setCurrentUser(user);
+          if (typeof window !== 'undefined') {
+            localStorage.setItem('s4hel_user_session', JSON.stringify(user));
+            localStorage.setItem('s4hel_current_user', JSON.stringify(user));
+          }
+        } else {
+          router.replace('/login');
         }
       } catch (e) {
         console.error('Auth init error', e);
+        router.replace('/login');
       } finally {
         setAuthInitialized(true);
       }
@@ -87,35 +99,84 @@ export default function Home() {
         };
         setCurrentUser(user);
         if (typeof window !== 'undefined') {
+          localStorage.setItem('s4hel_user_session', JSON.stringify(user));
           localStorage.setItem('s4hel_current_user', JSON.stringify(user));
         }
+      } else if (_event === 'SIGNED_OUT') {
+        setCurrentUser(null);
+        router.replace('/login');
       }
     });
 
     return () => {
       subscription.unsubscribe();
     };
-  }, []);
-
-  const handleLogin = (user: { name: string; role: string; email?: string }) => {
-    setCurrentUser(user);
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('s4hel_current_user', JSON.stringify(user));
-    }
-  };
+  }, [router]);
 
   const handleLogout = async () => {
     try {
       await supabase.auth.signOut();
     } catch (e) {}
     if (typeof window !== 'undefined') {
+      localStorage.removeItem('s4hel_user_session');
       localStorage.removeItem('s4hel_current_user');
+      document.cookie = 's4hel_session=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
     }
     setCurrentUser(null);
+    router.push('/login');
   };
 
   // Navigation & Data States
   const [currentTab, setCurrentTab] = useState<NavTab>('dashboard');
+
+  // Load active tab from URL searchParams or localStorage on mount
+  useEffect(() => {
+    try {
+      if (typeof window !== 'undefined') {
+        const params = new URLSearchParams(window.location.search);
+        const tabParam = params.get('tab') as NavTab;
+        const validTabs: NavTab[] = [
+          'dashboard',
+          'cashout',
+          'accounts',
+          'company_bank',
+          'payments',
+          'expenses',
+          'customers',
+        ];
+        if (tabParam && validTabs.includes(tabParam)) {
+          setCurrentTab(tabParam);
+        } else {
+          const savedTab = localStorage.getItem('s4hel_active_tab') as NavTab;
+          if (savedTab && validTabs.includes(savedTab)) {
+            setCurrentTab(savedTab);
+          }
+        }
+      }
+    } catch (e) {}
+  }, []);
+
+  const handleSelectTab = (tab: NavTab) => {
+    if (tab === 'settings') {
+      router.push('/settings');
+      return;
+    }
+    if (tab === 'services') {
+      setIsServiceManagerOpen(true);
+      return;
+    }
+    setCurrentTab(tab);
+    try {
+      localStorage.setItem('s4hel_active_tab', tab);
+      const url = new URL(window.location.href);
+      if (tab === 'dashboard') {
+        url.searchParams.delete('tab');
+      } else {
+        url.searchParams.set('tab', tab);
+      }
+      window.history.replaceState({}, '', url.toString());
+    } catch (e) {}
+  };
   const [selectedPeriod, setSelectedPeriod] = useState<DatePeriod>('all');
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [expenses, setExpenses] = useState<DailyExpense[]>([]);
@@ -149,7 +210,6 @@ export default function Home() {
   const [isCustomerDetailOpen, setIsCustomerDetailOpen] = useState(false);
   const [selectedCustomerForDetail, setSelectedCustomerForDetail] = useState<Customer | null>(null);
 
-  const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
   const [isReceiptModalOpen, setIsReceiptModalOpen] = useState(false);
   const [activeReceiptTransaction, setActiveReceiptTransaction] = useState<Transaction | null>(null);
 
@@ -575,7 +635,14 @@ export default function Home() {
   }, [allServicesMap]);
 
   if (authInitialized && !currentUser) {
-    return <LoginScreen onLogin={handleLogin} />;
+    return (
+      <div style={{ height: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#050c16', color: '#38bdf8' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+          <div style={{ width: '24px', height: '24px', border: '2.5px solid #0284c7', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.7s linear infinite' }} />
+          <span style={{ fontSize: '15px', fontWeight: 700, letterSpacing: '0.2px' }}>Redirecting to secure login...</span>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -593,7 +660,7 @@ export default function Home() {
           setIsTransactionModalOpen(true);
         }}
         onOpenNewExpense={() => setIsExpenseModalOpen(true)}
-        onOpenSettings={() => setIsSettingsModalOpen(true)}
+        onOpenSettings={() => router.push('/settings')}
         currentUser={currentUser || { name: 'Safi Sahib', role: 'Lead Accountant' }}
         onLogout={handleLogout}
         onSyncTelegramRate={handleSyncTelegramRate}
@@ -604,13 +671,7 @@ export default function Home() {
         {/* Sidebar (Fixed & Pinned LTR) */}
         <Sidebar
           currentTab={currentTab}
-          onSelectTab={(tab) => {
-            if (tab === 'services') {
-              setIsServiceManagerOpen(true);
-            } else {
-              setCurrentTab(tab);
-            }
-          }}
+          onSelectTab={handleSelectTab}
           stats={{
             totalProfit: stats.totalProfit,
             totalExpenses: stats.totalExpenses,
@@ -1842,13 +1903,6 @@ export default function Home() {
         }}
         transaction={activeReceiptTransaction}
         settings={settings}
-      />
-
-      <SettingsModal
-        isOpen={isSettingsModalOpen}
-        onClose={() => setIsSettingsModalOpen(false)}
-        settings={settings}
-        onSave={handleSaveSettings}
       />
 
       <TelegramSyncModal

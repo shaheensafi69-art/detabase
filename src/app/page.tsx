@@ -1416,7 +1416,7 @@ export default function Home() {
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <ShieldCheck size={16} color="#10b981" />
                     <span>
-                      <strong>سیستم دفتر کل مالی ضد جعل (Immutable Audit-Proof Ledger):</strong> تمامی معاملات پس از ثبت نهایی قفل شده و طبق استندرد حسابداری دفتر S4 HEL هرگز حذف یا ویرایش نمی‌شوند.
+                      <strong>Immutable Financial Ledger (Tamper-Proof):</strong> All committed transactions are permanently sealed in the office ledger and cannot be edited or deleted.
                     </span>
                   </div>
                   <span
@@ -1433,7 +1433,7 @@ export default function Home() {
                     }}
                   >
                     <Lock size={12} />
-                    حسابرسی امن فعال
+                    Audit Shield Active
                   </span>
                 </div>
 
@@ -1451,7 +1451,7 @@ export default function Home() {
                         <th style={{ padding: '14px 16px', textAlign: 'center' }}>
                           <div style={{ display: 'inline-flex', alignItems: 'center', gap: '5px' }}>
                             <Lock size={12} color="#10b981" />
-                            <span>سند و فاکتور رسمی</span>
+                            <span>Voucher & Audit</span>
                           </div>
                         </th>
                       </tr>
@@ -1719,7 +1719,7 @@ export default function Home() {
                                       padding: '5px 8px',
                                       cursor: 'pointer',
                                     }}
-                                    title="چاپ فاکتور رسمی A4 (Print Official A4 Invoice)"
+                                    title="Print Official A4 Invoice"
                                   >
                                     <Printer size={15} />
                                   </button>
@@ -1738,7 +1738,7 @@ export default function Home() {
                                       padding: '5px 8px',
                                       cursor: 'pointer',
                                     }}
-                                    title="مشاهده جزئیات سند مالی (قفل‌شده در دفتر کل)"
+                                    title="View Audit Record (Sealed Ledger Dossier)"
                                   >
                                     <Eye size={15} />
                                   </button>
@@ -1754,7 +1754,7 @@ export default function Home() {
                                       padding: '5px 7px',
                                       color: '#94a3b8',
                                     }}
-                                    title="معامله نهایی در دفتر کل مالی • غیرقابل ویرایش یا حذف"
+                                    title="Permanent Ledger Record • Tamper-Proof"
                                   >
                                     <Lock size={13} color="#10b981" />
                                   </div>

@@ -6,7 +6,6 @@ import {
   Mail,
   User,
   ArrowRight,
-  Shield,
   ShieldCheck,
   Eye,
   EyeOff,
@@ -14,8 +13,8 @@ import {
   LogIn,
   CheckCircle2,
   Sparkles,
-  KeyRound,
   Briefcase,
+  KeyRound,
 } from 'lucide-react';
 import { DEFAULT_OFFICE_NAME } from '@/lib/constants';
 import { supabase } from '@/lib/supabase';
@@ -58,11 +57,13 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
 
       // Quick admin bypass if office offline password or username is used
       if (
-        (emailInput.toLowerCase() === 'admin' || emailInput.toLowerCase() === 'safi' || emailInput.toLowerCase() === 'safi@s4hel.com') &&
+        (emailInput.toLowerCase() === 'admin' ||
+          emailInput.toLowerCase() === 'safi' ||
+          emailInput.toLowerCase() === 'safi@s4hel.com') &&
         (passwordInput === 'admin' || passwordInput === '123456' || passwordInput === 's4hel2026')
       ) {
         onLogin({
-          name: 'Safi Sahib',
+          name: 'Shaheen Safi',
           role: 'Head of Operations & Lead Accountant',
           email: 'safi@s4hel.com',
         });
@@ -77,9 +78,8 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
       });
 
       if (authError) {
-        // If Supabase user not found but has entered non-empty credentials, check if they want demo access or invalid credentials
         if (authError.message.includes('Invalid login credentials')) {
-          throw new Error('ایمیل یا رمز عبور وارد شده نادرست است. اگر حساب کاربری ندارید، لطفاً از بخش «ثبت نام» اقدام کنید.');
+          throw new Error('Invalid email or password. If you do not have an account, please switch to the Sign Up tab.');
         }
         throw authError;
       }
@@ -99,7 +99,7 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
         });
       }
     } catch (err: any) {
-      setError(err.message || 'خطایی در ورود به سیستم رخ داد. لطفاً مجدداً تلاش نمایید.');
+      setError(err.message || 'An error occurred while signing in. Please check your credentials.');
     } finally {
       setLoading(false);
     }
@@ -112,12 +112,12 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
     setSuccessMessage('');
 
     if (signupPassword.length < 6) {
-      setError('رمز عبور باید حداقل شامل ۶ نویسه (کاراکتر) باشد.');
+      setError('Password must be at least 6 characters long.');
       return;
     }
 
     if (signupPassword !== signupConfirmPassword) {
-      setError('رمز عبور با تکرار آن همخوانی ندارد.');
+      setError('Passwords do not match. Please verify your entries.');
       return;
     }
 
@@ -141,7 +141,7 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
       if (signupError) throw signupError;
 
       if (data.user) {
-        setSuccessMessage('حساب کاربری شما با موفقیت ایجاد شد! در حال انتقال به داشبورد...');
+        setSuccessMessage('Account created successfully! Redirecting to dashboard...');
         setTimeout(() => {
           onLogin({
             name: fullName || 'New User',
@@ -151,16 +151,16 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
         }, 1200);
       }
     } catch (err: any) {
-      setError(err.message || 'خطا در ثبت نام حساب جدید. لطفاً ورودی‌ها را بررسی نمایید.');
+      setError(err.message || 'Failed to create account. Please try again.');
     } finally {
       setLoading(false);
     }
   };
 
-  // 3. Quick Staff Login
-  const handleQuickStaffLogin = () => {
+  // 3. Quick Staff Login Bypass
+  const handleQuickDemoLogin = () => {
     onLogin({
-      name: 'Safi Sahib',
+      name: 'Shaheen Safi',
       role: 'Head of Operations & Lead Accountant',
       email: 'safi@s4hel.com',
     });
@@ -170,21 +170,24 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
     <div
       style={{
         minHeight: '100vh',
+        width: '100%',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        padding: '24px 16px',
-        background: 'radial-gradient(circle at 50% 25%, rgba(2, 132, 199, 0.2) 0%, rgba(10, 25, 47, 0.8) 50%, #060e18 100%)',
+        background: 'radial-gradient(ellipse at 50% 30%, #0c213b 0%, #06111f 65%, #030811 100%)',
         position: 'relative',
+        padding: '24px',
         overflow: 'hidden',
+        fontFamily: "'Plus Jakarta Sans', system-ui, -apple-system, sans-serif",
+        direction: 'ltr',
       }}
     >
-      {/* Background Decorative Rings */}
+      {/* Decorative ambient background rings */}
       <div
         style={{
           position: 'absolute',
-          width: '600px',
-          height: '600px',
+          width: '750px',
+          height: '750px',
           borderRadius: '50%',
           border: '1px solid rgba(2, 132, 199, 0.08)',
           top: '50%',
@@ -196,46 +199,62 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
       <div
         style={{
           position: 'absolute',
-          width: '900px',
-          height: '900px',
+          width: '1050px',
+          height: '1050px',
           borderRadius: '50%',
-          border: '1px solid rgba(234, 88, 12, 0.05)',
+          border: '1px solid rgba(2, 132, 199, 0.04)',
           top: '50%',
           left: '50%',
           transform: 'translate(-50%, -50%)',
           pointerEvents: 'none',
         }}
       />
-
       <div
-        className="glass-panel"
+        style={{
+          position: 'absolute',
+          width: '420px',
+          height: '420px',
+          borderRadius: '50%',
+          background: 'radial-gradient(circle, rgba(2, 132, 199, 0.15) 0%, transparent 70%)',
+          top: '20%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          pointerEvents: 'none',
+          filter: 'blur(40px)',
+        }}
+      />
+
+      {/* Main Glassmorphic Card */}
+      <div
         style={{
           width: '100%',
           maxWidth: '480px',
-          padding: '36px 32px',
+          background: 'rgba(10, 25, 47, 0.82)',
+          backdropFilter: 'blur(20px)',
+          WebkitBackdropFilter: 'blur(20px)',
+          border: '1px solid rgba(2, 132, 199, 0.35)',
           borderRadius: '24px',
-          border: '1px solid rgba(255, 255, 255, 0.12)',
-          boxShadow: '0 25px 60px rgba(0, 0, 0, 0.8), 0 0 40px rgba(2, 132, 199, 0.15)',
+          padding: '36px 32px',
+          boxShadow: '0 25px 60px -15px rgba(0, 0, 0, 0.7), 0 0 35px rgba(2, 132, 199, 0.18)',
           position: 'relative',
-          zIndex: 1,
+          zIndex: 10,
         }}
       >
         {/* Brand Header */}
-        <div style={{ textAlign: 'center', marginBottom: '24px' }}>
+        <div style={{ textAlign: 'center', marginBottom: '26px' }}>
           <div
             style={{
-              width: '72px',
-              height: '72px',
-              borderRadius: '20px',
-              background: 'rgba(255, 255, 255, 0.04)',
-              border: '1.5px solid rgba(2, 132, 199, 0.4)',
+              width: '64px',
+              height: '64px',
+              borderRadius: '18px',
+              background: 'linear-gradient(135deg, rgba(2, 132, 199, 0.25) 0%, rgba(249, 115, 22, 0.2) 100%)',
+              border: '1px solid rgba(2, 132, 199, 0.45)',
               display: 'inline-flex',
               alignItems: 'center',
               justifyContent: 'center',
-              boxShadow: '0 10px 25px rgba(2, 132, 199, 0.35)',
-              marginBottom: '14px',
-              overflow: 'hidden',
               padding: '6px',
+              marginBottom: '14px',
+              boxShadow: '0 8px 24px rgba(2, 132, 199, 0.35)',
             }}
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -245,35 +264,43 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
               style={{ width: '100%', height: '100%', objectFit: 'contain' }}
             />
           </div>
-          <h1 style={{ fontSize: '21px', fontWeight: 900, color: '#f8fafc', margin: 0, letterSpacing: '-0.3px' }}>
+
+          <h1
+            style={{
+              fontSize: '22px',
+              fontWeight: 900,
+              color: '#f8fafc',
+              margin: '0 0 6px 0',
+              letterSpacing: '-0.3px',
+            }}
+          >
             {DEFAULT_OFFICE_NAME}
           </h1>
-          <p style={{ fontSize: '12.5px', color: '#94a3b8', marginTop: '4px' }}>
-            پرتال رسمی مدیریت دیتابیس مالی، حواله‌جات و خدمات الکترونیک
+
+          <p style={{ fontSize: '13px', color: '#94a3b8', margin: '0 0 14px 0', lineHeight: 1.5 }}>
+            Enterprise Accounting & Financial Operations Portal
           </p>
 
-          {/* Immutable Accounting Ledger Badge */}
           <div
             style={{
-              marginTop: '10px',
               display: 'inline-flex',
               alignItems: 'center',
               gap: '6px',
-              background: 'rgba(16, 185, 129, 0.1)',
+              background: 'rgba(16, 185, 129, 0.12)',
               border: '1px solid rgba(16, 185, 129, 0.3)',
-              padding: '4px 10px',
               borderRadius: '20px',
-              fontSize: '11px',
+              padding: '4px 12px',
               color: '#34d399',
+              fontSize: '11.5px',
               fontWeight: 700,
             }}
           >
-            <ShieldCheck size={13} color="#10b981" />
-            <span>سیستم دفتر کل مالی غیرقابل تغییر (Immutable Ledger)</span>
+            <ShieldCheck size={14} color="#10b981" />
+            <span>Immutable Ledger Policy Active</span>
           </div>
         </div>
 
-        {/* Tab Switcher: Login vs Sign Up */}
+        {/* Tab Switcher: Sign In vs Sign Up */}
         <div
           style={{
             display: 'flex',
@@ -310,7 +337,7 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
             }}
           >
             <LogIn size={15} />
-            <span>ورود به سیستم (Sign In)</span>
+            <span>Sign In</span>
           </button>
 
           <button
@@ -339,7 +366,7 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
             }}
           >
             <UserPlus size={15} />
-            <span>ثبت نام حساب جدید (Sign Up)</span>
+            <span>Sign Up</span>
           </button>
         </div>
 
@@ -354,8 +381,6 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
               borderRadius: '10px',
               fontSize: '12.5px',
               marginBottom: '18px',
-              textAlign: 'right',
-              direction: 'rtl',
               lineHeight: 1.5,
             }}
           >
@@ -373,8 +398,6 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
               borderRadius: '10px',
               fontSize: '12.5px',
               marginBottom: '18px',
-              textAlign: 'right',
-              direction: 'rtl',
               display: 'flex',
               alignItems: 'center',
               gap: '8px',
@@ -388,9 +411,9 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
         {/* ================= MODE: LOGIN ================= */}
         {mode === 'login' ? (
           <form onSubmit={handleLoginSubmit}>
-            <div className="form-group">
-              <label className="form-label" style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span>ایمیل یا نام کاربری (Email / Username)</span>
+            <div className="form-group" style={{ marginBottom: '16px' }}>
+              <label className="form-label" style={{ display: 'flex', justifyContent: 'space-between', color: '#cbd5e1' }}>
+                <span>Email or Username</span>
                 <span style={{ fontSize: '11px', color: '#64748b' }}>safi@s4hel.com</span>
               </label>
               <div style={{ position: 'relative' }}>
@@ -399,7 +422,7 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
                   required
                   value={loginEmail}
                   onChange={(e) => setLoginEmail(e.target.value)}
-                  placeholder="ایمیل خود را وارد نمایید..."
+                  placeholder="Enter email or username..."
                   className="form-input"
                   style={{ paddingLeft: '40px' }}
                 />
@@ -412,14 +435,14 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
             </div>
 
             <div className="form-group" style={{ marginBottom: '22px' }}>
-              <label className="form-label">رمز عبور (Password)</label>
+              <label className="form-label" style={{ color: '#cbd5e1' }}>Password</label>
               <div style={{ position: 'relative' }}>
                 <input
                   type={showLoginPassword ? 'text' : 'password'}
                   required
                   value={loginPassword}
                   onChange={(e) => setLoginPassword(e.target.value)}
-                  placeholder="رمز عبور حساب..."
+                  placeholder="Enter account password..."
                   className="form-input"
                   style={{ paddingLeft: '40px', paddingRight: '40px' }}
                 />
@@ -456,34 +479,33 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
               className="btn btn-primary"
               style={{
                 width: '100%',
-                padding: '12px',
+                padding: '13px',
                 fontSize: '14.5px',
                 fontWeight: 800,
-                background: 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)',
+                borderRadius: '12px',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 gap: '8px',
-                borderRadius: '10px',
-                boxShadow: '0 4px 15px rgba(2, 132, 199, 0.4)',
+                boxShadow: '0 6px 20px rgba(2, 132, 199, 0.45)',
               }}
             >
-              <span>{loading ? 'در حال بررسی اطلاعات...' : 'ورود به داشبورد مالی'}</span>
+              <span>{loading ? 'Verifying Credentials...' : 'Sign In to Dashboard'}</span>
               <ArrowRight size={18} />
             </button>
           </form>
         ) : (
           /* ================= MODE: SIGN UP ================= */
           <form onSubmit={handleSignupSubmit}>
-            <div className="form-group">
-              <label className="form-label">نام و تخلص کامل (Full Name)</label>
+            <div className="form-group" style={{ marginBottom: '14px' }}>
+              <label className="form-label" style={{ color: '#cbd5e1' }}>Full Name</label>
               <div style={{ position: 'relative' }}>
                 <input
                   type="text"
                   required
                   value={signupName}
                   onChange={(e) => setSignupName(e.target.value)}
-                  placeholder="مثال: صفی الله صاحب"
+                  placeholder="e.g. Shaheen Safi"
                   className="form-input"
                   style={{ paddingLeft: '40px' }}
                 />
@@ -495,15 +517,15 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
               </div>
             </div>
 
-            <div className="form-group">
-              <label className="form-label">ایمیل آدرس رسمی (Official Email)</label>
+            <div className="form-group" style={{ marginBottom: '14px' }}>
+              <label className="form-label" style={{ color: '#cbd5e1' }}>Official Email Address</label>
               <div style={{ position: 'relative' }}>
                 <input
                   type="email"
                   required
                   value={signupEmail}
                   onChange={(e) => setSignupEmail(e.target.value)}
-                  placeholder="user@s4hel.com"
+                  placeholder="staff@s4hel.com"
                   className="form-input"
                   style={{ paddingLeft: '40px' }}
                 />
@@ -515,8 +537,8 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
               </div>
             </div>
 
-            <div className="form-group">
-              <label className="form-label">سمت / مسئولیت کاری (Role & Department)</label>
+            <div className="form-group" style={{ marginBottom: '14px' }}>
+              <label className="form-label" style={{ color: '#cbd5e1' }}>Department & Role</label>
               <div style={{ position: 'relative' }}>
                 <select
                   value={signupRole}
@@ -524,10 +546,10 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
                   className="form-select"
                   style={{ paddingLeft: '40px' }}
                 >
-                  <option value="Head of Operations & Lead Accountant">مدیر مالی و امور اجرایی (Head Accountant)</option>
-                  <option value="Exchange & Cashout Officer">مسئول کش‌اوت، صرافی و تیک‌تاک (Cashout Officer)</option>
-                  <option value="Account Creation & Banking Specialist">متخصص افتتاح حساب و شرکت (Banking Specialist)</option>
-                  <option value="Financial Auditor & Compliance">حسابرس و نظارت دفتر (Auditor)</option>
+                  <option value="Head of Operations & Lead Accountant">Head of Operations & Lead Accountant</option>
+                  <option value="Exchange & Cashout Officer">Exchange & Cash-Out Officer (TikTok / Wise)</option>
+                  <option value="Account Creation & Banking Specialist">Account Creation & Banking Specialist</option>
+                  <option value="Financial Auditor & Compliance">Financial Auditor & Compliance Officer</option>
                 </select>
                 <Briefcase
                   size={18}
@@ -537,15 +559,15 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
               </div>
             </div>
 
-            <div className="form-group">
-              <label className="form-label">رمز عبور (Password - حداقل ۶ کاراکتر)</label>
+            <div className="form-group" style={{ marginBottom: '14px' }}>
+              <label className="form-label" style={{ color: '#cbd5e1' }}>Password (Min. 6 characters)</label>
               <div style={{ position: 'relative' }}>
                 <input
                   type={showSignupPassword ? 'text' : 'password'}
                   required
                   value={signupPassword}
                   onChange={(e) => setSignupPassword(e.target.value)}
-                  placeholder="تعیین رمز عبور قوی..."
+                  placeholder="Set strong password..."
                   className="form-input"
                   style={{ paddingLeft: '40px', paddingRight: '40px' }}
                 />
@@ -577,14 +599,14 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
             </div>
 
             <div className="form-group" style={{ marginBottom: '22px' }}>
-              <label className="form-label">تکرار رمز عبور (Confirm Password)</label>
+              <label className="form-label" style={{ color: '#cbd5e1' }}>Confirm Password</label>
               <div style={{ position: 'relative' }}>
                 <input
                   type={showSignupPassword ? 'text' : 'password'}
                   required
                   value={signupConfirmPassword}
                   onChange={(e) => setSignupConfirmPassword(e.target.value)}
-                  placeholder="تکرار رمز عبور..."
+                  placeholder="Repeat your password..."
                   className="form-input"
                   style={{ paddingLeft: '40px' }}
                 />
@@ -602,64 +624,65 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
               className="btn btn-primary"
               style={{
                 width: '100%',
-                padding: '12px',
+                padding: '13px',
                 fontSize: '14.5px',
                 fontWeight: 800,
-                background: 'linear-gradient(135deg, #ea580c 0%, #c2410c 100%)',
+                borderRadius: '12px',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 gap: '8px',
-                borderRadius: '10px',
-                boxShadow: '0 4px 15px rgba(234, 88, 12, 0.4)',
+                background: 'linear-gradient(135deg, #ea580c 0%, #c2410c 100%)',
+                boxShadow: '0 6px 20px rgba(234, 88, 12, 0.45)',
               }}
             >
-              <span>{loading ? 'در حال ثبت اطلاعات...' : 'ثبت نام و ایجاد حساب کاربری'}</span>
-              <CheckCircle2 size={18} />
+              <span>{loading ? 'Creating Staff Account...' : 'Register New Account'}</span>
+              <ArrowRight size={18} />
             </button>
           </form>
         )}
 
-        {/* Quick Staff Access Button */}
+        {/* Quick Staff Access Bypass */}
         <div style={{ marginTop: '20px', textAlign: 'center' }}>
           <button
             type="button"
-            onClick={handleQuickStaffLogin}
+            onClick={handleQuickDemoLogin}
             style={{
-              background: 'rgba(255, 255, 255, 0.04)',
+              background: 'transparent',
               border: '1px dashed rgba(2, 132, 199, 0.4)',
               color: '#38bdf8',
               padding: '8px 16px',
-              borderRadius: '8px',
-              fontSize: '12px',
+              borderRadius: '10px',
+              fontSize: '12.5px',
               fontWeight: 700,
               cursor: 'pointer',
               display: 'inline-flex',
               alignItems: 'center',
               gap: '6px',
-              transition: 'all 0.2s ease',
+              transition: 'all 0.2s',
             }}
           >
             <Sparkles size={14} color="#f59e0b" />
-            <span>ورود سریع مدیریت (Safi Sahib - Quick Access)</span>
+            <span>Direct Access (Shaheen Safi - Quick Access)</span>
           </button>
         </div>
 
-        {/* Footer Security Note */}
+        {/* Footer Security Badge */}
         <div
           style={{
-            marginTop: '22px',
+            marginTop: '24px',
             paddingTop: '16px',
             borderTop: '1px solid rgba(255, 255, 255, 0.08)',
-            textAlign: 'center',
-            fontSize: '11.5px',
-            color: '#94a3b8',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '8px',
+            fontSize: '11px',
+            color: '#64748b',
           }}
         >
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
-            <Shield size={14} color="#10b981" />
-            <span>پایگاه داده متصل به Supabase Cloud PostgreSQL • امنیت رمزنگاری ۲۵۶ بیتی</span>
-          </div>
+          <ShieldCheck size={14} color="#0284c7" />
+          <span>256-Bit SSL Encryption • Supabase Cloud PostgreSQL</span>
         </div>
       </div>
     </div>

@@ -1,7 +1,16 @@
 'use client';
 
 import React from 'react';
-import { PlusCircle, Receipt, ArrowRightLeft, ShieldCheck, User, Send, LogOut } from 'lucide-react';
+import {
+  PlusCircle,
+  Receipt,
+  ArrowRightLeft,
+  ShieldCheck,
+  User,
+  RefreshCw,
+  LogOut,
+  Settings,
+} from 'lucide-react';
 import { DEFAULT_OFFICE_NAME } from '@/lib/constants';
 
 interface NavbarProps {
@@ -37,7 +46,6 @@ export default function Navbar({
     setCurrentDate(
       new Date().toLocaleDateString('en-US', {
         weekday: 'short',
-        year: 'numeric',
         month: 'short',
         day: 'numeric',
       })
@@ -51,106 +59,116 @@ export default function Navbar({
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        padding: '12px 28px',
-        borderBottom: '1px solid rgba(2, 132, 199, 0.25)',
-        background: 'linear-gradient(90deg, rgba(7, 17, 30, 0.96) 0%, rgba(10, 27, 48, 0.96) 100%)',
-        backdropFilter: 'blur(16px)',
+        padding: '0 28px',
+        borderBottom: '1px solid rgba(2, 132, 199, 0.18)',
+        background: 'linear-gradient(180deg, rgba(8, 20, 36, 0.98) 0%, rgba(5, 14, 26, 0.98) 100%)',
+        backdropFilter: 'blur(20px)',
+        WebkitBackdropFilter: 'blur(20px)',
         position: 'sticky',
         top: 0,
         zIndex: 50,
-        height: '74px',
+        height: '72px',
+        boxShadow: '0 4px 24px -2px rgba(0, 0, 0, 0.5)',
       }}
     >
-      {/* Office Branding with Official Logo */}
+      {/* 1. Left Branding Section */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
         <div
           style={{
-            width: '46px',
-            height: '46px',
+            width: '42px',
+            height: '42px',
             borderRadius: '12px',
-            background: 'rgba(255, 255, 255, 0.05)',
-            border: '1px solid rgba(2, 132, 199, 0.3)',
+            background: 'linear-gradient(135deg, rgba(2, 132, 199, 0.2) 0%, rgba(249, 115, 22, 0.15) 100%)',
+            border: '1px solid rgba(2, 132, 199, 0.35)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             overflow: 'hidden',
             padding: '3px',
-            boxShadow: '0 4px 14px rgba(2, 132, 199, 0.25)',
+            boxShadow: '0 4px 14px rgba(2, 132, 199, 0.2)',
             flexShrink: 0,
           }}
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="/logo.png"
-            alt="S4 HEL Logo"
+            alt="Logo"
             style={{ width: '100%', height: '100%', objectFit: 'contain' }}
           />
         </div>
+
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <h1
               style={{
-                fontSize: '17px',
+                fontSize: '16.5px',
                 fontWeight: 900,
-                color: 'var(--text-main)',
+                color: '#f8fafc',
                 margin: 0,
-                letterSpacing: '-0.2px',
+                letterSpacing: '-0.3px',
               }}
             >
               {officeName || DEFAULT_OFFICE_NAME}
             </h1>
             <span
               style={{
-                fontSize: '10px',
-                padding: '2px 7px',
+                fontSize: '9.5px',
+                padding: '2px 6px',
                 borderRadius: '5px',
-                background: 'rgba(249, 115, 22, 0.15)',
-                color: '#fb923c',
+                background: 'linear-gradient(135deg, rgba(2, 132, 199, 0.25) 0%, rgba(249, 115, 22, 0.25) 100%)',
+                color: '#38bdf8',
+                border: '1px solid rgba(2, 132, 199, 0.35)',
                 fontWeight: 800,
-                letterSpacing: '0.5px',
+                letterSpacing: '0.4px',
               }}
             >
               PRO
             </span>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '2px' }}>
-            <span style={{ fontSize: '11.5px', color: 'var(--text-dim)' }}>
-              {currentDate}
-            </span>
-            <span style={{ color: 'var(--border-subtle)' }}>•</span>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '3px' }}>
+            <span style={{ fontSize: '11.5px', color: '#94a3b8' }}>{currentDate}</span>
+            <span style={{ color: 'rgba(255, 255, 255, 0.15)' }}>•</span>
             <div
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
-                gap: '4px',
+                gap: '5px',
                 fontSize: '11px',
                 color: '#34d399',
-                background: 'rgba(16, 185, 129, 0.12)',
-                padding: '2px 8px',
-                borderRadius: '6px',
                 fontWeight: 600,
               }}
             >
-              <ShieldCheck size={12} />
-              Cloud Database Connected
+              <span
+                style={{
+                  width: '6px',
+                  height: '6px',
+                  borderRadius: '50%',
+                  background: '#10b981',
+                  boxShadow: '0 0 8px #10b981',
+                  display: 'inline-block',
+                }}
+              />
+              <span>Live Cloud DB</span>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Center Currency Ticker with Live Telegram Sync */}
+      {/* 2. Center Live Market & Currency Controller */}
       <div
         style={{
           display: 'flex',
           alignItems: 'center',
-          gap: '10px',
-          background: 'rgba(2, 132, 199, 0.08)',
-          border: '1px solid rgba(2, 132, 199, 0.25)',
-          padding: '6px 14px',
-          borderRadius: '12px',
-          boxShadow: '0 2px 10px rgba(0, 0, 0, 0.2)',
+          gap: '12px',
+          background: 'rgba(255, 255, 255, 0.03)',
+          border: '1px solid rgba(2, 132, 199, 0.2)',
+          padding: '5px 14px',
+          borderRadius: '14px',
+          boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.06)',
         }}
       >
+        {/* Exchange Rate Badge */}
         <div
           onClick={onOpenSettings}
           style={{
@@ -158,16 +176,18 @@ export default function Navbar({
             alignItems: 'center',
             gap: '8px',
             cursor: 'pointer',
+            paddingRight: '6px',
           }}
-          title="Click to manually edit exchange rate & fees"
+          title="Click to view & adjust exchange rate"
         >
-          <ArrowRightLeft size={16} color="#0284c7" />
-          <span style={{ fontSize: '12.5px', color: 'var(--text-muted)' }}>Kabul Rate:</span>
-          <span style={{ fontSize: '14.5px', fontWeight: 800, color: '#38bdf8' }}>
+          <ArrowRightLeft size={14} color="#0284c7" />
+          <span style={{ fontSize: '12px', color: '#94a3b8', fontWeight: 600 }}>Kabul Rate:</span>
+          <span style={{ fontSize: '14px', fontWeight: 900, color: '#38bdf8', letterSpacing: '-0.2px' }}>
             1 USD = {usdToAfn.toFixed(2)} AFN
           </span>
         </div>
 
+        {/* Sync Rate Icon Button */}
         {onSyncTelegramRate && (
           <button
             onClick={onSyncTelegramRate}
@@ -175,56 +195,53 @@ export default function Navbar({
             style={{
               display: 'inline-flex',
               alignItems: 'center',
-              gap: '6px',
-              padding: '5px 12px',
+              justifyContent: 'center',
+              width: '28px',
+              height: '28px',
               borderRadius: '8px',
-              border: '1px solid rgba(2, 132, 199, 0.4)',
-              background: isSyncingTelegram
-                ? 'rgba(2, 132, 199, 0.3)'
-                : 'linear-gradient(135deg, rgba(2, 132, 199, 0.2) 0%, rgba(249, 115, 22, 0.15) 100%)',
+              border: '1px solid rgba(2, 132, 199, 0.35)',
+              background: isSyncingTelegram ? 'rgba(2, 132, 199, 0.3)' : 'rgba(2, 132, 199, 0.12)',
               color: '#38bdf8',
-              fontSize: '11.5px',
-              fontWeight: 700,
               cursor: isSyncingTelegram ? 'wait' : 'pointer',
-              opacity: isSyncingTelegram ? 0.7 : 1,
               transition: 'all 0.2s',
             }}
-            title="Fetch live Kabul dollar rate from @kabul_dollar Telegram channel"
+            title="Sync live rate from @kabul_dollar Telegram channel"
           >
-            <Send size={12} style={{ transform: 'rotate(-10deg)' }} />
-            <span>{isSyncingTelegram ? 'Fetching...' : 'Live Telegram Rate'}</span>
+            <RefreshCw
+              size={13}
+              style={{
+                animation: isSyncingTelegram ? 'spin 1s linear infinite' : 'none',
+              }}
+            />
           </button>
         )}
 
-        {/* Currency Switcher (USD vs AFN) */}
+        {/* Currency Switcher Pill */}
         {onToggleDisplayCurrency && (
           <div
             style={{
               display: 'flex',
               alignItems: 'center',
-              background: 'rgba(8, 20, 36, 0.9)',
-              borderRadius: '9px',
+              background: 'rgba(3, 10, 20, 0.8)',
+              borderRadius: '8px',
               padding: '2px',
-              border: '1px solid rgba(2, 132, 199, 0.4)',
-              marginLeft: '4px',
+              border: '1px solid rgba(255, 255, 255, 0.08)',
             }}
           >
             <button
               type="button"
               onClick={() => onToggleDisplayCurrency('USD')}
               style={{
-                padding: '4px 10px',
-                borderRadius: '7px',
-                fontSize: '11.5px',
+                padding: '3px 8px',
+                borderRadius: '6px',
+                fontSize: '11px',
                 fontWeight: 800,
                 border: 'none',
                 cursor: 'pointer',
-                background: displayCurrency === 'USD' ? 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)' : 'transparent',
+                background: displayCurrency === 'USD' ? '#0284c7' : 'transparent',
                 color: displayCurrency === 'USD' ? '#ffffff' : '#94a3b8',
-                boxShadow: displayCurrency === 'USD' ? '0 2px 8px rgba(2, 132, 199, 0.4)' : 'none',
-                transition: 'all 0.15s',
+                transition: 'all 0.15s ease',
               }}
-              title="Display all financial figures primarily in US Dollars ($)"
             >
               $ USD
             </button>
@@ -232,18 +249,16 @@ export default function Navbar({
               type="button"
               onClick={() => onToggleDisplayCurrency('AFN')}
               style={{
-                padding: '4px 10px',
-                borderRadius: '7px',
-                fontSize: '11.5px',
+                padding: '3px 8px',
+                borderRadius: '6px',
+                fontSize: '11px',
                 fontWeight: 800,
                 border: 'none',
                 cursor: 'pointer',
-                background: displayCurrency === 'AFN' ? 'linear-gradient(135deg, #10b981 0%, #059669 100%)' : 'transparent',
+                background: displayCurrency === 'AFN' ? '#10b981' : 'transparent',
                 color: displayCurrency === 'AFN' ? '#ffffff' : '#94a3b8',
-                boxShadow: displayCurrency === 'AFN' ? '0 2px 8px rgba(16, 185, 129, 0.4)' : 'none',
-                transition: 'all 0.15s',
+                transition: 'all 0.15s ease',
               }}
-              title="Display all financial figures primarily in Afghan Afghanis (AFN)"
             >
               ؋ AFN
             </button>
@@ -251,27 +266,77 @@ export default function Navbar({
         )}
       </div>
 
-      {/* Right Action Buttons & Staff Profile */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+      {/* 3. Right Actions & User Profile */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+        {/* New Expense Button */}
         <button
           onClick={onOpenNewExpense}
-          className="btn btn-secondary"
-          style={{ fontSize: '12.5px', padding: '8px 14px' }}
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '6px',
+            padding: '7px 13px',
+            borderRadius: '10px',
+            background: 'rgba(244, 63, 94, 0.1)',
+            border: '1px solid rgba(244, 63, 94, 0.25)',
+            color: '#fb7185',
+            fontSize: '12px',
+            fontWeight: 700,
+            cursor: 'pointer',
+            transition: 'all 0.15s ease',
+          }}
+          title="Add office expense record"
         >
-          <Receipt size={15} color="#fb7185" />
-          + New Expense
+          <Receipt size={14} />
+          <span>+ Expense</span>
         </button>
 
+        {/* Primary New Transaction CTA */}
         <button
           onClick={onOpenNewTransaction}
-          className="btn btn-emerald"
-          style={{ fontSize: '13px', padding: '9px 18px' }}
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '7px',
+            padding: '8px 16px',
+            borderRadius: '10px',
+            background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+            border: 'none',
+            color: '#ffffff',
+            fontSize: '12.5px',
+            fontWeight: 800,
+            cursor: 'pointer',
+            boxShadow: '0 4px 14px rgba(16, 185, 129, 0.35)',
+            transition: 'all 0.15s ease',
+          }}
+          title="Create a new financial transaction or cash-out voucher"
         >
-          <PlusCircle size={16} />
-          + New Transaction
+          <PlusCircle size={15} />
+          <span>+ New Transaction</span>
         </button>
 
-        {/* User Profile Badge */}
+        {/* Settings Shortcut Button */}
+        <button
+          onClick={onOpenSettings}
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: '36px',
+            height: '36px',
+            borderRadius: '10px',
+            background: 'rgba(255, 255, 255, 0.04)',
+            border: '1px solid rgba(255, 255, 255, 0.08)',
+            color: '#94a3b8',
+            cursor: 'pointer',
+            transition: 'all 0.15s ease',
+          }}
+          title="System Settings & Office Parameters"
+        >
+          <Settings size={16} />
+        </button>
+
+        {/* User Profile Card */}
         <div
           onClick={onOpenSettings}
           style={{
@@ -280,58 +345,68 @@ export default function Navbar({
             gap: '8px',
             background: 'rgba(255, 255, 255, 0.04)',
             border: '1px solid rgba(255, 255, 255, 0.08)',
-            padding: '5px 12px',
+            padding: '5px 10px',
             borderRadius: '10px',
             cursor: 'pointer',
           }}
-          title="Click to open Settings"
+          title="User profile • Click to open settings"
         >
           <div
             style={{
-              width: '30px',
-              height: '30px',
+              width: '28px',
+              height: '28px',
               borderRadius: '50%',
-              background: 'linear-gradient(135deg, #0284c7 0%, #ea580c 100%)',
+              background: 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              color: '#fff',
-              boxShadow: '0 2px 8px rgba(2, 132, 199, 0.3)',
+              color: '#ffffff',
+              fontSize: '11px',
+              fontWeight: 800,
             }}
           >
-            <User size={15} />
+            {currentUser.name
+              ? currentUser.name
+                  .split(' ')
+                  .map((n) => n[0])
+                  .join('')
+                  .slice(0, 2)
+                  .toUpperCase()
+              : 'SS'}
           </div>
-          <div style={{ textAlign: 'left' }}>
-            <div style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-main)' }}>
+
+          <div style={{ textAlign: 'left', lineHeight: 1.2 }}>
+            <div style={{ fontSize: '12px', fontWeight: 700, color: '#f8fafc' }}>
               {currentUser.name}
             </div>
-            <div style={{ fontSize: '10px', color: 'var(--text-dim)' }}>
-              {currentUser.role}
+            <div style={{ fontSize: '10px', color: '#94a3b8' }}>
+              {currentUser.role?.split('&')[0] || 'Staff'}
             </div>
           </div>
         </div>
 
+        {/* Logout Button (English) */}
         {onLogout && (
           <button
             onClick={onLogout}
             style={{
-              background: 'rgba(244, 63, 94, 0.1)',
-              border: '1px solid rgba(244, 63, 94, 0.25)',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px',
+              background: 'rgba(244, 63, 94, 0.08)',
+              border: '1px solid rgba(244, 63, 94, 0.2)',
               color: '#fb7185',
               padding: '7px 11px',
               borderRadius: '10px',
               cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
               fontSize: '12px',
               fontWeight: 700,
               transition: 'all 0.15s ease',
             }}
-            title="خروج از حساب کاربری (Sign Out)"
+            title="Sign out of your session"
           >
-            <LogOut size={14} />
-            <span>خروج</span>
+            <LogOut size={13} />
+            <span>Sign Out</span>
           </button>
         )}
       </div>
